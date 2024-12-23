@@ -16,17 +16,17 @@ namespace FileOperations.Commands
                 if (!Directory.Exists(directoryPath))
                 {
                     Directory.CreateDirectory(directoryPath);
-                    Console.WriteLine($"Directory '{directoryPath}' created successfully.");
+                    Message.WriteSuccess($"Directory '{directoryPath}' created successfully.");
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine($"Directory '{directoryPath}' already exists.");
+                    Message.WriteError($"Directory '{directoryPath}' already exists.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while creating the directory: {ex.Message}");
+                Message.WriteError($"An error occurred while creating the directory: {ex.Message}");
             }
             return false;
         }
@@ -38,17 +38,17 @@ namespace FileOperations.Commands
                 if (Directory.Exists(directoryPath))
                 {
                     Directory.Delete(directoryPath, true);
-                    Console.WriteLine($"Directory '{directoryPath}' deleted successfully.");
+                    Message.WriteSuccess($"Directory '{directoryPath}' deleted successfully.");
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine($"Directory '{directoryPath}' does not exist.");
+                    Message.WriteError($"Directory '{directoryPath}' does not exist.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while deleting the directory: {ex.Message}");
+                Message.WriteError($"An error occurred while deleting the directory: {ex.Message}");
             }
             return false;
         }
@@ -65,14 +65,28 @@ namespace FileOperations.Commands
                     Console.WriteLine("Subdirectories:");
                     foreach (string subdirectory in subdirectories)
                     {
-                        Console.WriteLine($"  {subdirectory}");
+                        DirectoryInfo directoryInfo = new DirectoryInfo(subdirectory);
+                        var subdirectoryFiles = directoryInfo.GetFiles();
+                        long subdirectoryLength = 0;
+                        foreach (var subdirectoryFile in subdirectoryFiles)
+                        {
+                            subdirectoryLength += subdirectoryFile.Length;
+                        }
+                        string attrs = String.Empty;
+                        if (directoryInfo.Attributes.HasFlag(FileAttributes.ReadOnly)) attrs += "readonly ";
+                        if (directoryInfo.Attributes.HasFlag(FileAttributes.Hidden)) attrs += "hidden";
+                        Console.WriteLine($"Directory: {directoryInfo.Name}     -   Created at: {directoryInfo.CreationTime}    -   {directoryInfo.GetFiles().Sum(x => x.Length)} bytes    {attrs}");
                     }
 
                     string[] files = Directory.GetFiles(directoryPath);
-                    Console.WriteLine("\nFiles:");
+                    Console.WriteLine("\nFiles");
                     foreach (string file in files)
                     {
-                        Console.WriteLine($"  {file}");
+                        string attrs = String.Empty;
+                        FileInfo fileInfo = new FileInfo(file);
+                        if (fileInfo.Attributes.HasFlag(FileAttributes.ReadOnly)) attrs += "readonly ";
+                        if (fileInfo.Attributes.HasFlag(FileAttributes.Hidden)) attrs += "hidden";
+                        Console.WriteLine($"File: {fileInfo.Name}    -   Created at: {fileInfo.CreationTime}    -   Size: {fileInfo.Length} bytes       {attrs}");
                     }
                     return true;
                 }
@@ -92,7 +106,7 @@ namespace FileOperations.Commands
         {
             try
             {
-                string parentDirectory = Directory.GetParent(currentDirectory)?.FullName;
+                string? parentDirectory = Directory.GetParent(currentDirectory)?.FullName;
 
                 if (parentDirectory != null)
                 {

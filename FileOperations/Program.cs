@@ -6,7 +6,7 @@ namespace FileOperations
 {
     internal class Program
     {
-        private readonly static string _programPath = "C:\\Users\\LENOVO\\Desktop\\FileOperations";
+        private readonly static string _programPath = "C:\\Users\\MMXBAKI\\Desktop\\FileOperations";
         private static string currentPath = _programPath;
         static void Main(string[] args)
         {
@@ -28,6 +28,7 @@ namespace FileOperations
                         case "delete-directory": DeleteDirectory(); break;
                         case "list-directory": ListDirectory(); break;
                         case "goto": GoTo(); break;
+                        case "clear": Console.Clear(); break;
                         case "help": ShowCommands(); break;
                         case "exit": isRunning = false; break;
                         default: Message.WriteError("Incorrect command. Type 'help' to show commands."); break;
@@ -40,6 +41,7 @@ namespace FileOperations
         {
             Message.WriteInfo("File commands: create-file, delete-file, read-file, write-file.");
             Message.WriteInfo("Directory commands: create-directory, delete-directory, list-directory, goto");
+            Message.WriteInfo("Additional commands: help, clear, exit");
         }
 
         public static void CreateFile()
