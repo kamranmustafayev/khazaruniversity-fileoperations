@@ -6,7 +6,7 @@ namespace FileOperations
 {
     internal class Program
     {
-        private readonly static string _programPath = "C:\\Users\\MMXBAKI\\Desktop\\FileOperations";
+        private readonly static string _programPath = "C:\\Users\\LENOVO\\Desktop\\FileOperations";
         private static string currentPath = _programPath;
         static void Main(string[] args)
         {
